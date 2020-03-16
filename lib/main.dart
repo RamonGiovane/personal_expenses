@@ -14,6 +14,10 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  
+  final titleController = TextEditingController();
+  final valueController = TextEditingController();
+  
   final _transactions = [
     Transaction(
       id: 't1',
@@ -37,7 +41,6 @@ class MyHomePage extends StatelessWidget {
           title: Text('Personal Expenses'),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
@@ -51,15 +54,12 @@ class MyHomePage extends StatelessWidget {
               children: _transactions.map((tr) {
                 return Card(
                   child: Row(
-                    
                     children: <Widget>[
                       Container(
-                        
                         margin: EdgeInsets.symmetric(
                           horizontal: 15,
                           vertical: 10,
                         ),
-                        
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.purple,
@@ -67,27 +67,56 @@ class MyHomePage extends StatelessWidget {
                           ),
                         ),
                         padding: EdgeInsets.all(10),
-                        child: 
-                         _boldText(
-                           content: _monetaryVal(tr.value),
-                           size: 20,
-                           color: Colors.purple
-                         ),                      
+                        child: _boldText(
+                            content: _monetaryVal(tr.value),
+                            size: 20,
+                            color: Colors.purple),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           _boldText(content: tr.title),
                           _boldText(
-                            content: DateFormat('d MMM y').format(tr.date),
-                            color: Colors.grey[600]
-                          ),
+                              content: DateFormat('d MMM y').format(tr.date),
+                              color: Colors.grey[600]),
                         ],
                       )
                     ],
                   ),
                 );
               }).toList(),
+            ),
+            Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(labelText: 'Título'),
+                    ),
+                    TextField(
+                      controller: valueController,
+                      decoration: InputDecoration(labelText: 'Valor (R\$)'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text("Nova Transação"),
+                          textColor: Colors.purple,
+                          onPressed: () {
+                            print(titleController.text);
+                            print(valueController.text);
+                          },
+                        ),
+                      ],
+                    )
+                    
+                  ],
+                ),
+              ),
             )
           ],
         ),
@@ -95,11 +124,14 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  String _monetaryVal(double value){
+  String _monetaryVal(double value) {
     return "R\$ " + value.toStringAsFixed(2);
   }
-  Text _boldText( {@required String content, Color color = Colors.black, double size = 16}) {
 
+  Text _boldText(
+      {@required String content,
+      Color color = Colors.black,
+      double size = 16}) {
     return Text(
       content,
       style: TextStyle(
