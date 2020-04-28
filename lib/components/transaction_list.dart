@@ -26,7 +26,7 @@ class TransactionList extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.purple,
+                      color: Theme.of(context).primaryColor,//Colors.purple,
                       width: 2,
                     ),
                   ),
@@ -34,7 +34,7 @@ class TransactionList extends StatelessWidget {
                   child: utils.boldText(
                       content: utils.monetaryVal(tr.value),
                       size: 20,
-                      color: Colors.purple),
+                      color: Theme.of(context).primaryColor),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
