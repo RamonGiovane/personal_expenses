@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 
 
@@ -8,14 +10,23 @@ import 'package:flutter/material.dart';
 
   Text boldText(
       {@required String content,
+      BuildContext context,
       Color color = Colors.black,
       double size = 16}) {
-    return Text(
-      content,
-      style: TextStyle(
+    
+    var style = 
+      context == null ? 
+      Theme.of(context).textTheme.title 
+      
+      :
+      
+      TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: size,
         color: color,
-      ),
+      );
+    return Text(
+      content,
+      style: style
     );
   }

@@ -14,6 +14,24 @@ class ExpensesApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.deepPurple,
+        fontFamily: "Quicksand",
+        textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: "OpenSans",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+        ),
+          
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: "OpenSans",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        ),
       ),
     );
   }
@@ -63,48 +81,49 @@ class _MyHomePageState extends State<MyHomePage> {
 
     Navigator.of(context).pop();
   }
-    @override
-    Widget build(BuildContext context) {
-      return Center(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Personal Expenses'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () { _openTransactionFormModal(context); },
-              )
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Personal Expenses'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                _openTransactionFormModal(context);
+              },
+            )
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                child: Card(
+                  color: Theme.of(context).primaryColor,
+                  child: Text("Gráfico"),
+                  elevation: 5,
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  TransactionList(_transactions),
+                ],
+              ),
             ],
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: Card(
-                    color: Theme.of(context).primaryColor,
-                    child: Text("Gráfico"),
-                    elevation: 5,
-                  ),
-                ),
-                Column(
-                  children: <Widget>[
-                    TransactionList(_transactions),
-                    
-                  ],
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () { _openTransactionFormModal(context); },
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
         ),
-      );
-    }
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            _openTransactionFormModal(context);
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
+    );
+  }
 }
-
-

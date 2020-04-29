@@ -39,7 +39,7 @@ class TransactionList extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    utils.boldText(content: tr.title),
+                    utils.boldText(content: tr.title, context: context),
                     utils.boldText(
                         content: DateFormat('d MMM y').format(tr.date),
                         color: Colors.grey[600]),
