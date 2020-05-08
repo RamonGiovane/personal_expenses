@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:personal_expenses/components/chart.dart';
 import 'package:personal_expenses/components/transaction_form.dart';
 import 'components/transaction_list.dart';
 import 'models/transaction.dart';
@@ -42,21 +43,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // final _transactions = [
-  //   Transaction(
-  //     id: 't1',
-  //     title: 'Novo Tênis da Corrida',
-  //     value: 310.76,
-  //     date: DateTime.now(),
-  //   ),
-  //   Transaction(
-  //     id: 't2',
-  //     title: 'Conta de Luz',
-  //     value: 211.30,
-  //     date: DateTime.now(),
-  //   ),
-  // ];
-  final List<Transaction> _transactions = [];
+  final _transactions = [
+    Transaction(
+      id: 't1',
+      title: 'Novo Tênis da Corrida',
+      value: 310.76,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Conta de Luz',
+      value: 211.30,
+      date: DateTime.now(),
+    ),
+  ];
+  //final List<Transaction> _transactions = [];
+
+  List<Transaction> get _recentTransactions{
+    return _transactions.where((tr){
+      return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   void _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
@@ -102,11 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                child: Card(
-                  color: Theme.of(context).primaryColor,
-                  child: Text("Gráfico"),
-                  elevation: 5,
-                ),
+                child: Chart(_recentTransactions),
+                // child: Card(
+                //   //color: Colors.grey,
+                //   child: Chart(_recentTransactions),
+                //   //elevation: 5,
+                // ),
               ),
               Column(
                 children: <Widget>[
