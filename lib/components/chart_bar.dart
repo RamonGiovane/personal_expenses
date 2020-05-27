@@ -14,11 +14,35 @@ class ChartBar extends StatelessWidget{
     return Column(
       
       children: <Widget>[
-        FittedBox(
-          child: Text('${value.toStringAsFixed(2)}')
-        ),
+        
+        _showValue(),
+        
+        SizedBox(height: 5), //Dando um espaço entre os itens
+        
+        _showBar(context),
+        
         SizedBox(height: 5),
-        Container(
+        
+        _showDayLabel(),
+
+      ],
+    );
+  }
+  
+  Widget _showValue(){
+    return Container(
+          height: 15,
+          child: FittedBox(
+            child: Text('${value.toStringAsFixed(2)}')
+          ),
+        );
+  
+  }
+
+  Widget _showDayLabel() => Text(label);
+  
+  Widget _showBar(BuildContext context){
+    return Container(
           height: 60,
           width: 10,
           child: Stack(
@@ -45,13 +69,6 @@ class ChartBar extends StatelessWidget{
               )
             ],
           ),
-        ),
-        SizedBox(height: 5),
-        Text(label),
-      ],
-    );
+        );
   }
-  
-  
-
-  }
+}  

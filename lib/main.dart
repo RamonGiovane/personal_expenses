@@ -22,6 +22,10 @@ class ExpensesApp extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+              button: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              )
             ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
@@ -73,13 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
-
-  void _addTransaction(String title, double value) {
+  void _removeTransaction(String id){
+    setState(() {
+      _transactions.removeWhere((t) => id == t.id);
+    });
+  }
+  void _addTransaction(String title, double value, DateTime dateTime) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: dateTime,
     );
 
     setState(() {
@@ -118,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Column(
                 children: <Widget>[
-                  TransactionList(_transactions),
+                  TransactionList(_transactions, _removeTransaction),
                 ],
               ),
             ],

@@ -22,8 +22,8 @@ Text titleThemeText({
 }
 
 Text boldText(
-    {@required String content,
-    Color color = Colors.black,
+    String content,
+    {Color color = Colors.black,
     double size = 16}) {
     var style = TextStyle(
           fontWeight: FontWeight.bold,

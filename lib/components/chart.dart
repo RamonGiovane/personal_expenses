@@ -25,7 +25,7 @@ class Chart extends StatelessWidget{
       print("${DateFormat.E().format(weekDay)} - ${i['value']}");
 
       return i;
-    });
+    }).reversed.toList();
   }
 
   String _getDayLetter(DateTime weekDay){
@@ -80,7 +80,7 @@ class Chart extends StatelessWidget{
                     
                   label: tr['day'],
                   value: tr['value'],
-                  percentage: (tr['value'] as double) / _weekTotalValue,
+                  percentage: _weekTotalValue == 0 ? 0 : (tr['value'] as double) / _weekTotalValue,
                 ),
               );
              
