@@ -10,12 +10,9 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      child: _transactions.isEmpty
-          ? _showIdleImage(context)
-          : _showTransactions(context),
-    );
+    return _transactions.isEmpty
+        ? _showIdleImage(context)
+        : _showTransactions(context);
   }
 
   Widget _showIdleImage(BuildContext context) {

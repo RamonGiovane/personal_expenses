@@ -8,8 +8,16 @@ import 'models/transaction.dart';
 main() => runApp(ExpensesApp());
 
 class ExpensesApp extends StatelessWidget {
+  
+  double _calculateAvailableHeightSpace(BuildContext context){
+    return MediaQuery.of(context).size.height; 
+  }
+  
   @override
   Widget build(BuildContext context) {
+    
+    //final availableHeight
+
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
@@ -47,21 +55,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Novo Tênis da Corrida',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de Luz',
-      value: 211.30,
-      date: DateTime.now().subtract(new Duration(days: 2)),
-    ),
-  ];
-  //final List<Transaction> _transactions = [];
+
+  final List<Transaction> _transactions = [];
 
   List<Transaction> get _recentTransactions{
     return _transactions.where((tr){
@@ -97,11 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Scaffold(
-        appBar: AppBar(
+  AppBar _showAppBar(){
+    return AppBar(
           title: Text('Personal Expenses'),
           actions: <Widget>[
             IconButton(
@@ -111,22 +103,33 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             )
           ],
-        ),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appBar = _showAppBar();
+    
+    final availableHeight = MediaQuery.of(context).size.height 
+        - appBar.preferredSize.height - MediaQuery.of(context).padding.top;
+    
+    return Center(
+      child: Scaffold(
+        appBar: appBar,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
+                height: availableHeight * 0.3,
                 child: Chart(_recentTransactions),
-                // child: Card(
-                //   //color: Colors.grey,
-                //   child: Chart(_recentTransactions),
-                //   //elevation: 5,
-                // ),
               ),
               Column(
                 children: <Widget>[
-                  TransactionList(_transactions, _removeTransaction),
+                  Container(
+                    height: availableHeight * 0.7,
+                    child: TransactionList(_transactions, _removeTransaction),
+                    ),
                 ],
               ),
             ],
