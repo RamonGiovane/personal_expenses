@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ChartBar extends StatelessWidget{
-  
+class ChartBar extends StatelessWidget {
   final String label;
   final double value;
   final double percentage;
@@ -10,65 +9,66 @@ class ChartBar extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    
-    return Column(
-      
-      children: <Widget>[
-        
-        _showValue(),
-        
-        SizedBox(height: 5), //Dando um espaço entre os itens
-        
-        _showBar(context),
-        
-        SizedBox(height: 5),
-        
-        _showDayLabel(),
+    return LayoutBuilder(builder: (ctx, constraints) {
+      final double layoutBuilderHeight = constraints.maxHeight;
+      return Column(
+        children: <Widget>[
+          _showValue(layoutBuilderHeight),
 
-      ],
+          SizedBox(
+              height:
+                  layoutBuilderHeight * 0.05), //Dando um espaço entre os itens
+
+          _showBar(context, layoutBuilderHeight),
+
+          SizedBox(height: layoutBuilderHeight * 0.05),
+
+          _showDayLabel(layoutBuilderHeight),
+        ],
+      );
+    });
+  }
+
+  Widget _showValue(double layoutBuilderHeight) {
+    return Container(
+      height: layoutBuilderHeight * 0.15,
+      child: FittedBox(child: Text('${value.toStringAsFixed(2)}')),
     );
   }
-  
-  Widget _showValue(){
+
+  Widget _showDayLabel(double layoutBuilderHeight) {
     return Container(
-          height: 15,
-          child: FittedBox(
-            child: Text('${value.toStringAsFixed(2)}')
-          ),
-        );
-  
+      height: layoutBuilderHeight * 0.15,
+      child: FittedBox(
+        child: Text(label),
+      ),
+    );
   }
 
-  Widget _showDayLabel() => Text(label);
-  
-  Widget _showBar(BuildContext context){
+  Widget _showBar(BuildContext context, double layoutBuilderHeight) {
     return Container(
-          height: 60,
-          width: 10,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0
-                  ),
-                  color: Color.fromRGBO(220, 220, 220, 1),
-                  borderRadius: BorderRadius.circular(5),
-                )
+      height: layoutBuilderHeight * 0.6,
+      width: 10,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Container(
+              decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 1.0),
+            color: Color.fromRGBO(220, 220, 220, 1),
+            borderRadius: BorderRadius.circular(5),
+          )),
+          FractionallySizedBox(
+            heightFactor: percentage,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(5),
               ),
-              FractionallySizedBox(
-                heightFactor: percentage,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
+            ),
+          )
+        ],
+      ),
+    );
   }
-}  
+}
