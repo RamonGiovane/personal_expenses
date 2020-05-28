@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
-  
 
   TransactionForm(this.onSubmit);
 
@@ -27,40 +26,47 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: titleController,
-              onSubmitted: (_) {
-                _submitForm();
-              },
-              decoration: InputDecoration(labelText: 'Título'),
-            ),
-            TextField(
-              controller: valueController,
-              onSubmitted: (_) {
-                _submitForm();
-              },
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(labelText: 'Valor (R\$)'),
-            ),
-            _showDateForm(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                FlatButton(
-                  child: Text("Nova Transação"),
-                  color: Theme.of(context).primaryColor,
-                  textColor: Theme.of(context).textTheme.button.color,
-                  onPressed: _submitForm,
-                ),
-              ],
-            )
-          ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom:  10 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                controller: titleController,
+                onSubmitted: (_) {
+                  _submitForm();
+                },
+                decoration: InputDecoration(labelText: 'Título'),
+              ),
+              TextField(
+                controller: valueController,
+                onSubmitted: (_) {
+                  _submitForm();
+                },
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(labelText: 'Valor (R\$)'),
+              ),
+              _showDateForm(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FlatButton(
+                    child: Text("Nova Transação"),
+                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).textTheme.button.color,
+                    onPressed: _submitForm,
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -72,8 +78,8 @@ class _TransactionFormState extends State<TransactionForm> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(
-              "Data da Transação: ${_selectedDate == null ? " - - -" : DateFormat('dd/MM/y').format(_selectedDate)}")),
+              child: Text(
+                  "Data da Transação: ${_selectedDate == null ? " - - -" : DateFormat('dd/MM/y').format(_selectedDate)}")),
           FlatButton(
             textColor: Theme.of(context).primaryColor,
             child: Text(
@@ -93,12 +99,10 @@ class _TransactionFormState extends State<TransactionForm> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2019),
       lastDate: DateTime.now(),
-    ).then((pickedDate){
-      if(pickedDate == null)
-        return;
-      
-      setState(() =>_selectedDate = pickedDate);
+    ).then((pickedDate) {
+      if (pickedDate == null) return;
 
+      setState(() => _selectedDate = pickedDate);
     });
   }
 }

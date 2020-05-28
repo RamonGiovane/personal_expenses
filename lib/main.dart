@@ -8,16 +8,8 @@ import 'models/transaction.dart';
 main() => runApp(ExpensesApp());
 
 class ExpensesApp extends StatelessWidget {
-  
-  double _calculateAvailableHeightSpace(BuildContext context){
-    return MediaQuery.of(context).size.height; 
-  }
-  
   @override
   Widget build(BuildContext context) {
-    
-    //final availableHeight
-
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
@@ -25,16 +17,15 @@ class ExpensesApp extends StatelessWidget {
         accentColor: Colors.deepPurple,
         fontFamily: "Quicksand",
         textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                fontFamily: "OpenSans",
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              button: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              )
+            title: TextStyle(
+              fontFamily: "OpenSans",
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
+            button: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            )),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
@@ -55,11 +46,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<Transaction> _transactions = [];
+  bool _displayChart = true;
 
-  List<Transaction> get _recentTransactions{
-    return _transactions.where((tr){
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
@@ -72,11 +63,13 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
-  void _removeTransaction(String id){
+
+  void _removeTransaction(String id) {
     setState(() {
       _transactions.removeWhere((t) => id == t.id);
     });
   }
+
   void _addTransaction(String title, double value, DateTime dateTime) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
@@ -92,27 +85,26 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
-  AppBar _showAppBar(){
+  AppBar _showAppBar() {
     return AppBar(
-          title: Text('Personal Expenses'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                _openTransactionFormModal(context);
-              },
-            )
-          ],
-        );
+      title: Text('Personal Expenses'),
+      actions: <Widget>[
+        _showChartIcon(),
+        _showNewTransactionIcon(),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = _showAppBar();
-    
-    final availableHeight = MediaQuery.of(context).size.height 
-        - appBar.preferredSize.height - MediaQuery.of(context).padding.top;
-    
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
     return Center(
       child: Scaffold(
         appBar: appBar,
@@ -120,18 +112,21 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Container(
-                height: availableHeight * 0.25,
-                child: Chart(_recentTransactions),
-              ),
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: availableHeight * 0.75,
-                    child: TransactionList(_transactions, _removeTransaction),
+              if (isLandscape) _showChartSwitch(),
+              if (_displayChart || !isLandscape)
+                Container(
+                  height: availableHeight * (isLandscape ? 0.6 : 0.25),
+                  child: Chart(_recentTransactions),
+                ),
+              if (!_displayChart || !isLandscape)
+                Column(
+                  children: <Widget>[
+                    Container(
+                      height: availableHeight * 0.75,
+                      child: TransactionList(_transactions, _removeTransaction),
                     ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -144,5 +139,41 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
+  }
+
+  Widget _showChartSwitch() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("Exibir Gráfico"),
+        Switch(
+          value: _displayChart,
+          onChanged: (value) {
+            setState(() {
+              _displayChart = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _showNewTransactionIcon() {
+    return IconButton(
+      icon: Icon(Icons.add),
+      onPressed: () {
+        _openTransactionFormModal(context);
+      },
+    );
+  }
+
+  Widget _showChartIcon() {
+    return IconButton(
+        icon: Icon( (_displayChart == true) ? Icons.list : Icons.insert_chart),
+        onPressed: () {
+          setState(() { 
+            _displayChart = !_displayChart;
+          });
+    });
   }
 }

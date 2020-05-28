@@ -16,24 +16,28 @@ class TransactionList extends StatelessWidget {
   }
 
   Widget _showIdleImage(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-            height: 20), //isto serve para dar um espaço entre os componentes
+    return LayoutBuilder(
+      builder: (ctx, constraints) {
+        return Column(
+          children: <Widget>[
+            SizedBox(height: constraints.maxHeight * 0.02), //isto serve para dar um espaço entre os componentes
+      
+            utils.titleThemeText(
+                content: 'Nenhuma transação registrada ainda!',
+                context: context),
 
-        utils.titleThemeText(
-            content: 'Nenhuma transação registrada ainda!', context: context),
+            SizedBox(height: constraints.maxHeight * 0.02),
 
-        SizedBox(height: 20),
-
-        Container(
-          height: 200,
-          child: Image.asset(
-            'assets/images/waiting.png',
-            fit: BoxFit.cover,
-          ),
-        ),
-      ],
+            Container(
+              height: constraints.maxHeight * 0.5,
+              child: Image.asset(
+                'assets/images/waiting.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
