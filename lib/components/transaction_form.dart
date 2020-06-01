@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:personal_expenses/components/adaptative_button.dart';
+import 'package:personal_expenses/components/adaptative_text_field.dart';
 
 class TransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
@@ -34,34 +36,35 @@ class _TransactionFormState extends State<TransactionForm> {
             top: 10,
             left: 10,
             right: 10,
-            bottom:  10 + MediaQuery.of(context).viewInsets.bottom,
+            bottom: 10 + MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Column(
             children: <Widget>[
-              TextField(
-                controller: titleController,
-                onSubmitted: (_) {
-                  _submitForm();
-                },
-                decoration: InputDecoration(labelText: 'Título'),
+               AdaptativeTextField(
+                'Título',
+                titleController,
+                (_) => _submitForm()
               ),
-              TextField(
-                controller: valueController,
-                onSubmitted: (_) {
-                  _submitForm();
-                },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: 'Valor (R\$)'),
+              AdaptativeTextField.numeric(
+                'Valor (R\$)',
+                valueController,
+                (_) => _submitForm(),
               ),
+              // TextField(
+              //   controller: valueController,
+              //   onSubmitted: (_) {
+              //     _submitForm();
+              //   },
+              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
+              //   decoration: InputDecoration(labelText: 'Valor (R\$)'),
+              // ),
               _showDateForm(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  FlatButton(
-                    child: Text("Nova Transação"),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).textTheme.button.color,
-                    onPressed: _submitForm,
+                  AdaptativeButton(
+                    "Nova Transação",
+                    _submitForm,
                   ),
                 ],
               )

@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/components/chart.dart';
 import 'package:personal_expenses/components/transaction_form.dart';
@@ -41,12 +43,18 @@ class ExpensesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+    
+    
+  
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [];
+  final _listIcon = Platform.isIOS ? CupertinoIcons.news : Icons.list;
+  final _chartIcon = Platform.isIOS ? CupertinoIcons.news_solid : Icons.insert_chart;
+  final _addIcon = Platform.isIOS ? CupertinoIcons.add : Icons.add;
   bool _displayChart = true;
 
   List<Transaction> get _recentTransactions {
@@ -85,68 +93,99 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
-  AppBar _showAppBar() {
-    return AppBar(
-      title: Text('Personal Expenses'),
-      actions: <Widget>[
-        _showChartIcon(),
-        _showNewTransactionIcon(),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     bool isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
-    final appBar = _showAppBar();
+
+
+    final appBar = _getAppBar();
     final availableHeight = MediaQuery.of(context).size.height -
         appBar.preferredSize.height -
         MediaQuery.of(context).padding.top;
 
     return Center(
-      child: Scaffold(
-        appBar: appBar,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              if (isLandscape) _showChartSwitch(),
-              if (_displayChart || !isLandscape)
-                Container(
-                  height: availableHeight * (isLandscape ? 0.6 : 0.25),
-                  child: Chart(_recentTransactions),
+      child: Platform.isIOS
+          ? CupertinoPageScaffold(
+              child: _getScaffoldBody(isLandscape, availableHeight),
+              navigationBar: appBar,
+            )
+          : Scaffold(
+              appBar: appBar,
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: _getScaffoldBody(isLandscape, availableHeight),
                 ),
-              if (!_displayChart || !isLandscape)
-                Column(
-                  children: <Widget>[
-                    Container(
-                      height: availableHeight * 0.75,
-                      child: TransactionList(_transactions, _removeTransaction),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            _openTransactionFormModal(context);
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      ),
+              ),
+              floatingActionButton: _getNewTransactionFloatingBtn(),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+            ),
     );
   }
 
-  Widget _showChartSwitch() {
+  Widget _getAdaptativeIconButton(
+      {@required Icon icon, @required Function onPressed}) {
+    return Platform.isIOS
+        ? GestureDetector(child: icon, onTap: onPressed)
+        : IconButton(icon: icon, onPressed: onPressed);
+  }
+
+  PreferredSizeWidget _getAppBar() {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    return Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Personal Expenses'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                 if(isLandscape) _getChartIcon(),
+                _getNewTransactionIcon(),
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text('Personal Expenses'),
+            actions: <Widget>[
+              if(isLandscape) _getChartIcon(),
+              _getNewTransactionIcon(),
+            ],
+          );
+  }
+
+  Widget _getScaffoldBody(bool isLandscape, double availableHeight) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (isLandscape) _getChartSwitch(),
+        if (_displayChart || !isLandscape)
+          Container(
+            height: availableHeight * (isLandscape ? 0.6 : 0.25),
+            child: Chart(_recentTransactions),
+          ),
+        if (!_displayChart || !isLandscape)
+          Column(
+            children: <Widget>[
+              Container(
+                height: availableHeight * (isLandscape ? 1 : 0.75),
+                child: TransactionList(_transactions, _removeTransaction),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _getChartSwitch() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text("Exibir Gráfico"),
-        Switch(
+        Switch.adaptive(
+          activeColor: Theme.of(context).accentColor,
           value: _displayChart,
           onChanged: (value) {
             setState(() {
@@ -158,22 +197,33 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _showNewTransactionIcon() {
-    return IconButton(
-      icon: Icon(Icons.add),
+  Widget _getNewTransactionIcon() {
+    return _getAdaptativeIconButton(
+      icon: Icon(_addIcon),
       onPressed: () {
         _openTransactionFormModal(context);
       },
     );
   }
 
-  Widget _showChartIcon() {
-    return IconButton(
-        icon: Icon( (_displayChart == true) ? Icons.list : Icons.insert_chart),
+  Widget _getChartIcon() {
+    return _getAdaptativeIconButton(
+        icon: Icon((_displayChart == true) ? _listIcon : _chartIcon),
         onPressed: () {
-          setState(() { 
+          setState(() {
             _displayChart = !_displayChart;
           });
-    });
+        });
+  }
+
+  Widget _getNewTransactionFloatingBtn() {
+    return Platform.isIOS
+        ? Container()
+        : FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              _openTransactionFormModal(context);
+            },
+          );
   }
 }
