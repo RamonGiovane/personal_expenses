@@ -19,7 +19,7 @@ class AdaptativeTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return !Platform.isIOS
+    return Platform.isIOS
         ? Padding(
               padding: EdgeInsets.only(
                 bottom: 10,

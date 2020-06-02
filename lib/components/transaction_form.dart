@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:personal_expenses/components/adaptative_button.dart';
+import 'package:personal_expenses/components/adaptative_date_picker.dart';
 import 'package:personal_expenses/components/adaptative_text_field.dart';
 
 class TransactionForm extends StatefulWidget {
@@ -50,14 +50,6 @@ class _TransactionFormState extends State<TransactionForm> {
                 valueController,
                 (_) => _submitForm(),
               ),
-              // TextField(
-              //   controller: valueController,
-              //   onSubmitted: (_) {
-              //     _submitForm();
-              //   },
-              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-              //   decoration: InputDecoration(labelText: 'Valor (R\$)'),
-              // ),
               _showDateForm(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -76,36 +68,7 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   Widget _showDateForm() {
-    return Container(
-      height: 70,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              child: Text(
-                  "Data da Transação: ${_selectedDate == null ? " - - -" : DateFormat('dd/MM/y').format(_selectedDate)}")),
-          FlatButton(
-            textColor: Theme.of(context).primaryColor,
-            child: Text(
-              'Selecionar Data',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onPressed: _openDatePicker,
-          )
-        ],
-      ),
-    );
+    return AdaptativeDatePicker(_selectedDate, (newDate) => setState(() => _selectedDate = newDate));
   }
 
-  void _openDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      if (pickedDate == null) return;
-
-      setState(() => _selectedDate = pickedDate);
-    });
-  }
 }

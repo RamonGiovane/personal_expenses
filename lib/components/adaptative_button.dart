@@ -13,7 +13,7 @@ class AdaptativeButton extends StatelessWidget {
     final textColor = Theme.of(context).textTheme.button.color;
     final btnColor = Theme.of(context).primaryColor;
 
-    return !Platform.isIOS
+    return Platform.isIOS
         ? CupertinoButton(
             child: Text(label),
             onPressed: onPressed,
